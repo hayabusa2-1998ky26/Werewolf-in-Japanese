@@ -338,7 +338,9 @@ def night():
                         elif abirity- 1 == zinrou1:
                             print("その人は人狼でした。人狼は吊れているようです。")
                         elif abirity- 1 == turibito:
-                            print("その人は吊人です。しかし既に死んでいるため脅威ではありません。")
+                            print("その人は吊人でした。しかし既に死んでいるため脅威ではありません。")
+                        elif abirity - 1 == uranaisi:
+                            print("その人は占師でした。会議で報告しましょう。")
                         else:
                             if kyouzin_member == 1:
                                 print("その人は村人でした。狂人の可能性もあるので注意しましょう。")
