@@ -193,7 +193,10 @@ def night():
                         elif kill - 1 == turibito:
                             print("その人は吊人です。吊ってしまったら負けになります。")
                         else:
-                            print("その人は村人でした。投票しないようにしましょう。")
+                            if kyouzin_member == 1:
+                                print("その人は村人でした。狂人の可能性もあるので注意しましょう。")
+                            else:
+                                print("その人は村人でした。投票しないようにしましょう。")
                         uranai -= 1
                 else:
                     print("あなたは占師です。")
@@ -246,7 +249,8 @@ def night():
 def morning():
     global players, play_member, zinrou_member, zinrou1, zinrou2, players_safe, killed, killed_people, died_zinrou_people, votted, players_safe_toriaezu, kyouzin_member, kyouzin, turibito, turibito_die
     print("朝になりました。")
-    players_safe = tuple(players_safe_toriaezu)
+    a = tuple(players_safe_toriaezu)
+    players_safe = a
     if len(killed) == 0:
         print("昨夜死んだ人はいませんでした。")
     else:
@@ -283,7 +287,7 @@ def morning():
                 break
         if players_safe[j] == 0:
             print("あなたは既に死んでいます。")
-            print("死んでいると投票できません。")
+            print("死んでいると投票できません。ほかの人を選んでください。")
         else:
             print("あなたは誰に投票しますか?番号で決めてください。")
             for k in range(play_member):
@@ -297,9 +301,9 @@ def morning():
                         print("整数で答えてください")
                     else:
                         if j == kill - 1:
-                            print("それは自分です。自分は投票できません。")
+                            print("それは自分です。自分は投票できません。ほかの人を選んでください。")
                         elif players_safe[kill - 1] == 0:
-                            print("その人はすでに死んでいます。投票できません。")
+                            print("その人はすでに死んでいます。投票できません。ほかの人を選んでください。")
                         elif j == zinrou1 and kill - 1 == zinrou2:
                             print("その人は仲間です。本当に投票しますか?") 
                             break
@@ -362,7 +366,7 @@ def syouri_kakunin():
         print("吊人の勝利です。")
     elif play_member - killed_people - zinrou_member < zinrou_member - died_zinrou_people + 1 + kyouzin_member:
         print("人狼の勝利です。")
-    elif zinrou_member - died_zinrou_people == 0:
+    elif zinrou_member + kyouzin_member - died_zinrou_people == 0:
         print("村人の勝利です。")
     else:
         syouri = 0
@@ -393,7 +397,7 @@ def syouri_kakunin():
 # プレイする人
 players = ["player1", "player2", "player3", "player4", "plyaer5"]
 # 人狼の人数[1~2]
-zinrou_member = 2
+zinrou_member = 1
 # 占師の人数[0~1]
 uranaisi_member = 1
 # 占いができる回数[1~2]
@@ -435,7 +439,7 @@ turibito_member = 1
 
 # 人狼陣営勝利条件:
 # 人狼
-# 全員殺すか、村人の人数より人狼の人数のほうが多くなったら勝ち。吊人がつられてしまった場合、勝利は吊人に優先される。
+# 全員殺すか、村の人数の半分が人狼陣営になったら勝ち。吊人がつられてしまった場合、勝利は吊人に優先される。
 # 狂人
 # 人狼が勝利する。
 
