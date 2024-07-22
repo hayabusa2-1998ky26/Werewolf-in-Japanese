@@ -42,7 +42,8 @@ def yakusyoku_haihu():
             print("「人狼」(人狼陣営)")
             print("です。")
             if zinrou2 == -1:
-                print("仲間はいません。")
+                if kyouzin_member == 0:
+                    print("仲間はいません。")
             else:
                 if i == zinrou1:
                     print("仲間は" + players[zinrou2] + "です。")
@@ -50,6 +51,7 @@ def yakusyoku_haihu():
                     print("仲間は" + players[zinrou1] + "です。")
             if kyouzin_member == 1:
                 print("村に狂人が紛れ込んだようです。")
+                print("狂人はあなたの味方をしてくれるでしょう・")
         elif i == uranaisi:
             print("「占師」(村人陣営)")
             print("です。")
@@ -395,7 +397,7 @@ def syouri_kakunin():
 
 # 設定(入力してください。)
 # プレイする人
-players = ["player1", "player2", "player3", "player4", "plyaer5"]
+players = ["player1", "player2", "player3", "player4", "player5"]
 # 人狼の人数[1~2]
 zinrou_member = 1
 # 占師の人数[0~1]
