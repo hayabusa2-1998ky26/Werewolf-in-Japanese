@@ -3,7 +3,7 @@ import time
 import math
 import sys
 def yakusyoku_gime():
-    global players, i, play_member, zinrou_member, zinrou1, zinrou2, players_safe, uranaisi, kyouzin, kyouzin_member, turibito, turibito_member, kariudo, kariudo_member, reibai, reibai_member
+    global players, i, play_member, zinrou_member, zinrou1, zinrou2, players_safe, uranaisi, kyouzin, kyouzin_member, turibito, turibito_member, kariudo, kariudo_member, reibai, reibai_member, sityou, sityou_member
     zinrou1 = random.randint(0, play_member - 1)
     zinrou2 = random.randint(0, play_member - 1)
     while zinrou2 == zinrou1:
@@ -40,8 +40,14 @@ def yakusyoku_gime():
             reibai = random.randint(0, play_member - 1)
     else:
         reibai = -1
+    if sityou_member == 1:
+        sityou = random.randint(0, play_member - 1)
+        while zinrou1 == sityou or zinrou2 == sityou or uranaisi == sityou or kyouzin == sityou or turibito == sityou or kariudo == sityou or reibai == sityou:
+            sityou = random.randint(0, play_member - 1)
+    else:
+        sityou = -1
 def yakusyoku_haihu():
-    global play_member, zinrou1, zinrou2, players_safe, uranaisi, uranai, kyouzin, kyouzin_haaku, kyouzin_member, turibito, reibai, reibai_kaisuu, kariudo
+    global play_member, zinrou1, zinrou2, players_safe, uranaisi, uranai, kyouzin, kyouzin_haaku, kyouzin_member, turibito, reibai, reibai_kaisuu, kariudo, sityou, sityou_hyou
     for i in range(play_member):
         print(str(players[i]) + "、こちらへ来て、他の人は見えないところへ離れてください。")
         while True:
@@ -63,7 +69,7 @@ def yakusyoku_haihu():
                     print("仲間は" + players[zinrou1] + "です。")
             if kyouzin_member == 1:
                 print("村に狂人が紛れ込んだようです。")
-                print("狂人はあなたの味方をしてくれるでしょう・")
+                print("狂人はあなたの味方をしてくれるでしょう。")
         elif i == uranaisi:
             print("「占師」(村人陣営)")
             print("です。")
@@ -91,12 +97,17 @@ def yakusyoku_haihu():
             print("「狩人」(村人陣営)")
             print("です。")
             print("毎夜のうち一回だけだれかを人狼からまもることができます。")
-            print("占師や霊媒などを守りましょう。")
+            print("占師や霊媒師などを守りましょう。")
         elif i == reibai:
-            print("「霊媒」(村人陣営)")
+            print("「霊媒師」(村人陣営)")
             print("です。")
             print("死んだ人が誰だったのかを見ることができます。")
             print("今回霊媒できる回数は" + str(reibai_kaisuu) + "回です。")
+        elif i == sityou:
+            print("「市長」(村人陣営)")
+            print("です。")
+            print("毎朝の投票で追加で表を入れることができます。")
+            print("今回投票できる回数は" + str(sityou_hyou) + "回です。")
         else:
             print("「村人」(村人陣営)")
             print("です。")
@@ -220,7 +231,9 @@ def night():
                         elif abirity - 1 == kariudo:
                             print("その人は狩人です。誰かを守ってくれます。")
                         elif abirity - 1 == reibai:
-                            print("その人は霊媒です。会議で報告しましょう。")
+                            print("その人は霊媒師です。会議で報告しましょう。")
+                        elif abirity - 1 == sityou:
+                            print("その人は市長です。会議で報告しましょう。")
                         else:
                             if kyouzin_member == 1:
                                 print("その人は村人でした。狂人の可能性もあるので注意しましょう。")
@@ -297,7 +310,7 @@ def night():
                     kariudo_mamori = abirity - 1
             elif j == reibai:
                 if not reibai_kaisuu == 0:
-                    print("あなたは霊媒です。誰を霊媒しますか? 番号で決めてください。")
+                    print("あなたは霊媒師です。誰を霊媒しますか? 番号で決めてください。")
                     print(0, "誰も霊媒しない。")
                     for k in range(play_member):
                         print(k + 1, players[k])
@@ -341,6 +354,12 @@ def night():
                             print("その人は吊人でした。しかし既に死んでいるため脅威ではありません。")
                         elif abirity - 1 == uranaisi:
                             print("その人は占師でした。会議で報告しましょう。")
+                        elif abirity - 1 == kariudo:
+                            print("その人は狩人でした。勇敢な人でした...。")
+                        elif abirity - 1 == reibai:
+                            print("その人は霊媒師でした。村にとって大きな痛手です。")
+                        elif abirity - 1 == sityou:
+                            print("その人は市長でした。市長選で立候補しましょう(嘘)。")
                         else:
                             if kyouzin_member == 1:
                                 print("その人は村人でした。狂人の可能性もあるので注意しましょう。")
@@ -348,8 +367,19 @@ def night():
                                 print("その人は村人でした。")
                         reibai_kaisuu -= 1
                 else:
-                    print("あなたは霊媒です。")
+                    print("あなたは霊媒師です。")
                     print("既に霊媒し終えています。")
+                    print("役職のターンの時間の長さを減らすために、何秒か待ってもらいます。")
+                    print("だいたい5秒がたつまでお待ちください・・・。")
+                    t1 = time.time()
+                    matutime = random.randint(5, 7)
+                    while True:
+                        if time.time() - t1 > matutime:
+                            break
+                    print("お待たせしました。")
+            elif j == sityou:
+                    print("あなたは市長です。")
+                    print("夜だとすることはありません。。")
                     print("役職のターンの時間の長さを減らすために、何秒か待ってもらいます。")
                     print("だいたい5秒がたつまでお待ちください・・・。")
                     t1 = time.time()
@@ -376,12 +406,13 @@ def night():
         for j in range(1100):
             print("")
 def morning():
-    global players, play_member, zinrou_member, zinrou1, zinrou2, players_safe, killed, killed_people, died_zinrou_people, votted, players_safe_toriaezu, kyouzin_member, kyouzin, turibito, turibito_die, kariudo_member, kariudo, kariudo_mamori, reibai_member, reibai
+    global players, play_member, zinrou_member, zinrou1, zinrou2, players_safe, killed, killed_people, died_zinrou_people, votted, players_safe_toriaezu, kyouzin_member, kyouzin, turibito, turibito_die, kariudo_member, kariudo, kariudo_mamori, reibai_member, reibai, sityou, sityou_hyou
     print("朝になりました。")
     if players_safe_toriaezu[kariudo_mamori] == 0 and kariudo_mamori != -1:
         players_safe_toriaezu[kariudo_mamori] = 1
         killed.remove(kariudo_mamori)
         print("誰かが人狼から誰かを守ったようです。")
+        killed_people -= 1
     a = tuple(players_safe_toriaezu)
     players_safe = a
     if len(killed) == 0:
@@ -422,7 +453,9 @@ def morning():
             print("あなたは既に死んでいます。")
             print("死んでいると投票できません。ほかの人を選んでください。")
         else:
-            print("あなたは誰に投票しますか?番号で決めてください。")
+            if sityou == j:
+                print("あなたは市長です。誰かに" + str(sityou_hyou) + "票入れることができます。")
+                print("あなたは誰に投票しますか?番号で決めてください。")
             for k in range(play_member):
                 print(k + 1, players[k])
             abirity= "n"
@@ -455,7 +488,11 @@ def morning():
                     nandemonai = 1
                     print("誰を投票しますか? 番号で決めてください。")
             print(str(players[abirity- 1]) + "に投票しました。")
-            votted.append(abirity- 1)
+            kaisuu = 1
+            if j == sityou:
+                kaisuu = sityou_hyou
+            for kaisuu in range(kaisuu):
+                votted.append(abirity- 1)
         while True:
             print("次の人に回してください。(y/n)")
             yorosiidesuka = input()
@@ -515,42 +552,48 @@ def syouri_kakunin():
             if i == zinrou1 or i == zinrou2:
                 print(players[i], "人狼", safe)
             elif i == uranaisi:
-                print(players[i], "占師", safe)
+                print(players[i], "占師  ", safe)
             elif i == kyouzin:
-                print(players[i], "狂人", safe)
+                print(players[i], "狂人  ", safe)
             elif i == turibito:
-                print(players[i], "吊人", safe)
+                print(players[i], "吊人  ", safe)
             elif i == kariudo:
-                print(players[i], "狩人", safe)
+                print(players[i], "狩人  ", safe)
             elif i == reibai:
-                print(players[i], "霊媒", safe)
+                print(players[i], "霊媒師", safe)
             else:
-                print(players[i], "村人", safe)
+                print(players[i], "村人  ", safe)
         print("")
         print("お疲れさまでした。")
         sys.exit()
 
 # 設定(入力してください。)
 # プレイする人
-players = ["player1", "player2", "player3", "player4", "player5"]
+players = ["朔", "結衣", "佳子", "大輝", "奏"]
 # 占師の人数[0~1]
-uranaisi_member = 0
+uranaisi_member = 1
 # 占いができる回数[1~2]
-uranai = 1
-# 狩人の人数[0~1](β版)
-kariudo_member = 1
-# 霊媒の人数[0~1](β版)
-reibai_member = 1
+uranai = 100000
+# 狩人の人数[0~1]
+kariudo_member = 0
+# 霊媒師の人数[0~1]
+reibai_member = 0
 # 霊媒ができる回数[1~2]
-reibai_kaisuu = 2
+reibai_kaisuu = 100000
+# 市長の人数[0~1]
+sityou_member = 1
+# 市長の票の入れられる個数[2~3]
+sityou_hyou = 3
+
 # 人狼の人数[1~2]
 zinrou_member = 1
 # 狂人の人数[0~1]
-kyouzin_member = 0
+kyouzin_member = 1
 # 狂人が人狼を誰かを知るか(1ならする、0ならしない。)
-kyouzin_haaku = 1
+kyouzin_haaku = 0
+
 # 吊人の人数[0~1]
-turibito_member = 0
+turibito_member = 1
 
 
 
@@ -562,8 +605,10 @@ turibito_member = 0
 # 夜に、生きているだれかの役職を知ることができる。ただし狂人は村人とでる。
 # 狩人
 # 毎夜、誰か一人を人狼から守ることができる。回数制限はない。ただし、村人陣営じゃなくても守ることができてしまう。
-# 霊媒
+# 霊媒師
 # 夜に、死んだだれかの役職を知ることができる。ただし狂人は村人とでる。
+# 市長
+# 朝の投票で追加でさらに票を入れることができる。
 
 # 人狼陣営
 # 人狼
@@ -573,8 +618,7 @@ turibito_member = 0
 
 # 第三陣営
 # 吊人
-# 吊られたら勝ちの第三陣営。人狼に殺されるのは負け判定。
-
+# 吊られたら勝ちの第三陣営。殺されるのは負け判定。
 
 
 # 勝利条件:
