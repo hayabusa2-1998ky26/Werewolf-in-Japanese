@@ -505,7 +505,7 @@ def morning():
     votted_count = []
     for i in range(play_member):
         votted_count.append(0)
-    for i in range(play_member - killed_people):
+    for i in range(len(votted)):
         votted_count[votted[i]] += 1
     for i in range(play_member):
         print(votted_count[i], players[i])
@@ -561,6 +561,8 @@ def syouri_kakunin():
                 print(players[i], "狩人  ", safe)
             elif i == reibai:
                 print(players[i], "霊媒師", safe)
+            elif i == sityou:
+                print(players[i], "市長  ", safe)
             else:
                 print(players[i], "村人  ", safe)
         print("")
@@ -571,7 +573,7 @@ def syouri_kakunin():
 # プレイする人
 players = ["朔", "結衣", "佳子", "大輝", "奏"]
 # 占師の人数[0~1]
-uranaisi_member = 1
+uranaisi_member = 0
 # 占いができる回数[1~2]
 uranai = 100000
 # 狩人の人数[0~1]
@@ -581,19 +583,19 @@ reibai_member = 0
 # 霊媒ができる回数[1~2]
 reibai_kaisuu = 100000
 # 市長の人数[0~1]
-sityou_member = 1
+sityou_member = 0
 # 市長の票の入れられる個数[2~3]
 sityou_hyou = 3
 
 # 人狼の人数[1~2]
 zinrou_member = 1
 # 狂人の人数[0~1]
-kyouzin_member = 1
+kyouzin_member = 0
 # 狂人が人狼を誰かを知るか(1ならする、0ならしない。)
 kyouzin_haaku = 0
 
 # 吊人の人数[0~1]
-turibito_member = 1
+turibito_member = 0
 
 
 
