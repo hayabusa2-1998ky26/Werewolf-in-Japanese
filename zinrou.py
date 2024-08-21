@@ -571,7 +571,7 @@ def syouri_kakunin():
 
 # 設定(入力してください。)
 # プレイする人
-players = ["朔", "結衣", "佳子", "大輝", "奏"]
+players = ["player1", "player2", "player3", "player4", "player5"]
 # 占師の人数[0~1]
 uranaisi_member = 0
 # 占いができる回数[1~2]
