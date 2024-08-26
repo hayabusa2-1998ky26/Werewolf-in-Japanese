@@ -3,7 +3,7 @@ import time
 import math
 import sys
 def yakusyoku_gime():
-    global players, i, play_member, zinrou_member, zinrou1, zinrou2, players_safe, uranaisi, kyouzin, kyouzin_member, turibito, turibito_member, kariudo, kariudo_member, reibai, reibai_member, sityou, sityou_member
+    global players, i, play_member, zinrou_member, zinrou1, zinrou2, players_safe, uranaisi, kyouzin, kyouzin_member, turibito, turibito_member, kariudo, kariudo_member, reibai, reibai_member, sityou, sityou_member, kariudo, kariudo_member
     zinrou1 = random.randint(0, play_member - 1)
     zinrou2 = random.randint(0, play_member - 1)
     while zinrou2 == zinrou1:
@@ -46,6 +46,12 @@ def yakusyoku_gime():
             sityou = random.randint(0, play_member - 1)
     else:
         sityou = -1
+    if kaitou_member == 1:
+        kaitou = random.randint(0, play_member - 1)
+        while zinrou1 == kaitou or zinrou2 == kaitou or uranaisi == kaitou or kyouzin == kaitou or turibito == kaitou or kariudo == kaitou or reibai == kaitou or sityou == kaitou:
+            kaitou = random.randint(0, play_member - 1)
+    else:
+        kaitou = -1
 def yakusyoku_haihu():
     global play_member, zinrou1, zinrou2, players_safe, uranaisi, uranai, kyouzin, kyouzin_haaku, kyouzin_member, turibito, reibai, reibai_kaisuu, kariudo, sityou, sityou_hyou
     for i in range(play_member):
@@ -108,6 +114,11 @@ def yakusyoku_haihu():
             print("です。")
             print("毎朝の投票で追加で表を入れることができます。")
             print("今回投票できる回数は" + str(sityou_hyou) + "回です。")
+        elif i == kaitou:
+            print("「怪盗」(村人陣営)")
+            print("です。")
+            print("最初の夜に、誰かから役職を奪うことができます。")
+            print("最初の朝に役職は反映されて、次のターンに役職を奪われた人は奪われた自覚を持ちます。奪った能力は次の日の夜から使えるようになります。")
         else:
             print("「村人」(村人陣営)")
             print("です。")
@@ -119,7 +130,7 @@ def yakusyoku_haihu():
         for j in range(1100):
             print("")
 def night():
-    global players, i, play_member, zinrou_member, zinrou1, zinrou2, players_safe, killed, killed_people, players_safe_toriaezu, uranaisi, uranai, kyouzin_member, kyouzin, turibito, kariudo, kariudo_mamori, reibai, reibai_kaisuu
+    global players, i, play_member, zinrou_member, zinrou1, zinrou2, players_safe, killed, killed_people, players_safe_toriaezu, uranaisi, uranai, kyouzin_member, kyouzin, turibito, kariudo, kariudo_mamori, reibai, reibai_kaisuu, kaitou, nusumisaki, kaitou_nouryoku
     killed = []
     kariudo_mamori = -1
     print("夜になりました。")
@@ -223,7 +234,6 @@ def night():
                         print(str(players[abirity- 1]) + "を占いました。")
                         if abirity- 1 == zinrou2:
                             print("その人は人狼です。会議で報告しましょう。") 
-                            break
                         elif abirity- 1 == zinrou1:
                             print("その人は人狼です。会議で報告しましょう。")
                         elif abirity- 1 == turibito:
@@ -234,6 +244,8 @@ def night():
                             print("その人は霊媒師です。会議で報告しましょう。")
                         elif abirity - 1 == sityou:
                             print("その人は市長です。会議で報告しましょう。")
+                        elif abirity - 1 == kaitou:
+                            print("その人は怪盗です。役職を盗むことができます。")
                         else:
                             if kyouzin_member == 1:
                                 print("その人は村人でした。狂人の可能性もあるので注意しましょう。")
@@ -360,6 +372,8 @@ def night():
                             print("その人は霊媒師でした。村にとって大きな痛手です。")
                         elif abirity - 1 == sityou:
                             print("その人は市長でした。市長選で立候補しましょう(嘘)。")
+                        elif abirity - 1 == kaitou:
+                            print("その人は怪盗でした。役職を盗むことができます。")
                         else:
                             if kyouzin_member == 1:
                                 print("その人は村人でした。狂人の可能性もあるので注意しましょう。")
@@ -378,16 +392,72 @@ def night():
                             break
                     print("お待たせしました。")
             elif j == sityou:
-                    print("あなたは市長です。")
-                    print("夜だとすることはありません。。")
-                    print("役職のターンの時間の長さを減らすために、何秒か待ってもらいます。")
-                    print("だいたい5秒がたつまでお待ちください・・・。")
-                    t1 = time.time()
-                    matutime = random.randint(5, 7)
+                print("あなたは市長です。")
+                print("夜だとすることはありません。。")
+                print("役職のターンの時間の長さを減らすために、何秒か待ってもらいます。")
+                print("だいたい5秒がたつまでお待ちください・・・。")
+                t1 = time.time()
+                matutime = random.randint(5, 7)
+                while True:
+                    if time.time() - t1 > matutime:
+                        break
+                print("お待たせしました。")
+            elif j == kaitou:
+                print("あなたは怪盗です。誰の能力を奪いますか? 番号で決めてください。")
+                for k in range(play_member):
+                    print(k + 1, players[k])
+                abirity= "n"
+                while True:
                     while True:
-                        if time.time() - t1 > matutime:
-                            break
-                    print("お待たせしました。")
+                        try:
+                            abirity= int(input())
+                        except:
+                            print("整数で答えてください")
+                        else:
+                            if j == abirity- 1:
+                                print("それは自分です。自分は占えません")
+                            elif players_safe[abirity- 1] == 0:
+                                print("その人はすでに死んでいます。占えません。")
+                            elif int(abirity) > 0 and int(abirity) < play_member + 1:
+                                break
+                            else:
+                                print("範囲内で答えてください。")
+                    print(players[int(abirity- 1)] + "でよろしいですか?(y/n)")
+                    yorosiidesuka = input()
+                    if yorosiidesuka == "y":
+                        break
+                    elif yorosiidesuka == "n":
+                        nandemonai = 1
+                        print("誰を盗みますか? 番号で決めてください。")
+                print(str(players[abirity- 1]) + "を盗みました。")
+                nusumisaki = abirity - 1
+                if abirity- 1 == zinrou2:
+                    print("その人は人狼です。元人狼は村人になります。")
+                    kaitou_nouryoku = "zinrou2"
+                elif abirity- 1 == zinrou1:
+                    print("その人は人狼です。元人狼は村人になります。")
+                    kaitou_nouryoku = "zinrou1"
+                elif abirity- 1 == turibito:
+                    print("その人は吊人です。朝の会議で吊られましょう。")
+                    kaitou_nouryoku = "turibito"
+                elif abirity - 1 == kariudo:
+                    print("その人は狩人です。誰かを守りましょう。")
+                    kaitou_nouryoku = "kariudo"
+                elif abirity - 1 == reibai:
+                    print("その人は霊媒師です。死んだ人の役職を見ることができます。")
+                    kaitou_nouryoku = "reibai"
+                elif abirity - 1 == sityou:
+                    print("その人は市長です。朝、多くの票を入れることができますが、市長を盗まれた人は次の朝村人になります。")
+                    kaitou_nouryoku = "sityou"
+                elif abirity - 1 == kaitou:
+                    print("その人は怪盗です。怪盗が怪盗を盗むってどういうこと...?")
+                    kaitou_nouryoku = "kaitou"
+                elif abirity - 1 == kyouzin:
+                    print("その人は狂人です。人狼の協力をしましょう。")
+                    kaitou_nouryoku = "kyouzin"
+                else:
+                    print("その人は村人でした。能力はありません。")
+                    kaitou_nouryoku = "murabito"
             else:
                 print("あなたは村人です。今寝ています・・・。")
                 print("役職のターンの時間の長さを減らすために、何秒か待ってもらいます。")
@@ -406,15 +476,16 @@ def night():
         for j in range(1100):
             print("")
 def morning():
-    global players, play_member, zinrou_member, zinrou1, zinrou2, players_safe, killed, killed_people, died_zinrou_people, votted, players_safe_toriaezu, kyouzin_member, kyouzin, turibito, turibito_die, kariudo_member, kariudo, kariudo_mamori, reibai_member, reibai, sityou, sityou_hyou
+    global players, play_member, zinrou_member, zinrou1, zinrou2, players_safe, killed, killed_people, died_zinrou_people, votted, players_safe_toriaezu, kyouzin_member, kyouzin, turibito, turibito_die, kariudo_member, kariudo, kariudo_mamori, reibai_member, reibai, sityou, sityou_hyou, kaitou, nusumisaki, kaitou_nouryoku
     print("朝になりました。")
     if players_safe_toriaezu[kariudo_mamori] == 0 and kariudo_mamori != -1:
         players_safe_toriaezu[kariudo_mamori] = 1
         killed.remove(kariudo_mamori)
         print("誰かが人狼から誰かを守ったようです。")
         killed_people -= 1
-    a = tuple(players_safe_toriaezu)
-    players_safe = a
+    players_safe = []
+    for i in range(len(players_safe_toriaezu)):
+        players_safe.append(players_safe_toriaezu[i])
     if len(killed) == 0:
         print("昨夜死んだ人はいませんでした。")
     else:
@@ -422,6 +493,24 @@ def morning():
         for i in range(len(killed)):
             print(players[killed[i]])
         print("が殺されました。")
+    if kaitou_nouryoku == "zinrou2":
+        zinrou2 = kaitou
+    elif kaitou_nouryoku == "zinrou1":
+        zinrou1 = kaitou
+    elif kaitou_nouryoku == "turibito":
+        turibito = kaitou
+    elif kaitou_nouryoku == "kariudo":
+        kariudo = kaitou
+    elif kaitou_nouryoku == "reibai":
+        reibai = kaitou
+    elif kaitou_nouryoku == "sityou":
+        sityou = kaitou
+    elif kaitou_nouryoku == "kaitou":
+        kaitou = kaitou
+    elif kaitou_nouryoku == "kyouzin":
+        kyouzin = kaitou
+    kaitou = -1
+    nusumisaki
     syouri_kakunin()
     print("人狼が誰かを話し合いましょう。")
     print("制限時間は2分です。")
@@ -563,6 +652,8 @@ def syouri_kakunin():
                 print(players[i], "霊媒師", safe)
             elif i == sityou:
                 print(players[i], "市長  ", safe)
+            elif i == kaitou:
+                print(players[i], "怪盗  ", safe)
             else:
                 print(players[i], "村人  ", safe)
         print("")
@@ -587,6 +678,9 @@ kariudo_member = 0
 reibai_member = 0
 # 霊媒ができる回数[1~2]
 reibai_kaisuu = 100000
+
+# 怪盗の人数[0~1]
+kaitou_member = 1
 
 # 市長の人数[0~1]
 sityou_member = 0
@@ -655,6 +749,8 @@ zinrou1 = 0
 zinrou2 = 0
 uranaisi = 0
 turibito = 0
+reibai = 0
+kaitou = 0
 turibito_die = 0
 killed_people = 0
 died_zinrou_people = 0
